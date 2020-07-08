@@ -68,8 +68,10 @@ class HomePage extends StatelessWidget {
                                       child: ScaleAnimation(
                                         child: GestureDetector(
                                           child: PokeItem(
+                                            types: pokemon.type,
                                             index: index,
                                             name: pokemon.name,
+                                            num: pokemon.num,
                                           ),
                                         ),
                                       ),
