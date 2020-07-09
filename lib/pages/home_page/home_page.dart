@@ -5,13 +5,17 @@ import 'package:pokedex/consts/consts_app.dart';
 import 'package:pokedex/models/pokeapi.dart';
 import 'package:pokedex/pages/home_page/widgets/app_bar_home.dart';
 import 'package:pokedex/pages/home_page/widgets/poke_item.dart';
+import 'package:pokedex/pages/poke_detail/poke_detail_page.dart';
 import 'package:pokedex/stores/pokeapi_store.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    PokeApiStore pokeApiStore = PokeApiStore();
-    pokeApiStore.fetchPokemonList();
+    final _pokeApiStore = Provider.of<PokeApiStore>(context);
+    if (_pokeApiStore.pokeAPI == null) {
+      _pokeApiStore.fetchPokemonList();
+    }
 
     double screenWidth = MediaQuery.of(context).size.width;
     double statusHeight = MediaQuery.of(context).padding.top;
@@ -46,7 +50,7 @@ class HomePage extends StatelessWidget {
                     child: Observer(
                       name: 'ListaHomePage',
                       builder: (BuildContext context) {
-                        PokeAPI _pokeAPI = pokeApiStore.pokeAPI;
+                        PokeAPI _pokeAPI = _pokeApiStore.pokeAPI;
                         return (_pokeAPI != null)
                             ? AnimationLimiter(
                                 child: GridView.builder(
@@ -59,7 +63,7 @@ class HomePage extends StatelessWidget {
                                   itemCount: _pokeAPI.pokemon.length,
                                   itemBuilder: (context, index) {
                                     Pokemon pokemon =
-                                        pokeApiStore.getPokemon(index: index);
+                                        _pokeApiStore.getPokemon(index: index);
                                     return AnimationConfiguration.staggeredGrid(
                                       position: index,
                                       duration:
@@ -73,6 +77,18 @@ class HomePage extends StatelessWidget {
                                             name: pokemon.name,
                                             num: pokemon.num,
                                           ),
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          PokeDetailPage(
+                                                    index: index,
+                                                  ),
+                                                  fullscreenDialog: true,
+                                                ));
+                                          },
                                         ),
                                       ),
                                     );

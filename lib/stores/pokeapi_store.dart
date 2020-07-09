@@ -29,6 +29,16 @@ abstract class _PokeApiStoreBase with Store {
   }
 
   @action
+  setPokemonAtual({int index}) {
+    return _pokeAPI.pokemon[index];
+  }
+
+  @action
+  getPokemonAtual({int index}) {
+    return _pokeAPI.pokemon[index];
+  }
+
+  @action
   Widget getImage({String numero}) {
     return CachedNetworkImage(
       placeholder: (context, url) => new Container(

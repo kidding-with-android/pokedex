@@ -17,7 +17,7 @@ class ConstsAPI {
       case 'Grass':
         return Colors.green;
         break;
-      case 'Eletric':
+      case 'Electric':
         return Colors.amber;
         break;
       case 'Ice':
@@ -64,5 +64,4 @@ class ConstsAPI {
         break;
     }
   }
-
 }
