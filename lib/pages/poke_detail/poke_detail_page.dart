@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pokedex/consts/consts_api.dart';
 import 'package:pokedex/models/pokeapi.dart';
 import 'package:pokedex/stores/pokeapi_store.dart';
@@ -16,39 +17,55 @@ class PokeDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _pokeApiStore = Provider.of<PokeApiStore>(context);
-    Pokemon _pokemon = _pokeApiStore.getPokemon(index: index);
+    Pokemon _pokemon = _pokeApiStore.pokemonAtual;
 
-    _corPokemon = ConstsAPI.getColorType(type: _pokemon.type[0]);
+    // _corPokemon = ConstsAPI.getColorType(type: _pokemon.type[0]);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Opacity(
-          opacity: 0,
-          child: Text(
-            _pokemon.name,
-            style: TextStyle(
-              fontFamily: 'Google',
-              fontWeight: FontWeight.bold,
-              fontSize: 21,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(50),
+        child: Observer(builder: (context) {
+          _corPokemon = ConstsAPI.getColorType(
+                  type: _pokeApiStore.pokemonAtual.type[0]);
+          return AppBar(
+            title: Opacity(
+              opacity: 0,
+              child: Text(
+                _pokemon.name,
+                style: TextStyle(
+                  fontFamily: 'Google',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 21,
+                ),
+              ),
             ),
-          ),
-        ),
-        elevation: 0,
-        backgroundColor: _corPokemon,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.favorite_border),
-            onPressed: () {},
-          ),
-        ],
+            elevation: 0,
+            backgroundColor: _corPokemon,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () => Navigator.pop(context),
+            ),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.favorite_border),
+                onPressed: () {},
+              ),
+            ],
+          );
+        }),
       ),
-      backgroundColor: _corPokemon,
+      // backgroundColor: _corPokemon,
       body: Stack(
         children: [
+          Observer(
+            builder: (context) {
+              _corPokemon = ConstsAPI.getColorType(
+                  type: _pokeApiStore.pokemonAtual.type[0]);
+              return Container(
+                color: _corPokemon,
+              );
+            },
+          ),
           Container(
             height: MediaQuery.of(context).size.height / 3,
           ),
@@ -69,6 +86,9 @@ class PokeDetailPage extends StatelessWidget {
             child: SizedBox(
               height: 150,
               child: PageView.builder(
+                onPageChanged: (index) {
+                  _pokeApiStore.setPokemonAtual(index: index);
+                },
                 itemCount: _pokeApiStore.pokeAPI.pokemon.length,
                 itemBuilder: (context, index) {
                   Pokemon _pokeitem = _pokeApiStore.getPokemon(index: index);
