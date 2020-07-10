@@ -1,32 +1,39 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pokedex/consts/consts_api.dart';
+import 'package:get_it/get_it.dart';
 import 'package:pokedex/models/pokeapi.dart';
 import 'package:pokedex/stores/pokeapi_store.dart';
-import 'package:provider/provider.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 
-class PokeDetailPage extends StatelessWidget {
+class PokeDetailPage extends StatefulWidget {
   final int index;
-
-  Color _corPokemon;
 
   PokeDetailPage({Key key, this.index}) : super(key: key);
 
   @override
+  _PokeDetailPageState createState() => _PokeDetailPageState();
+}
+
+class _PokeDetailPageState extends State<PokeDetailPage> {
+  PageController _pageController;
+  PokeApiStore _pokeApiStore;
+  Pokemon _pokemon;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: widget.index);
+    _pokeApiStore = GetIt.instance<PokeApiStore>();
+    _pokemon = _pokeApiStore.pokemonAtual;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final _pokeApiStore = Provider.of<PokeApiStore>(context);
-    Pokemon _pokemon = _pokeApiStore.pokemonAtual;
-
-    // _corPokemon = ConstsAPI.getColorType(type: _pokemon.type[0]);
-
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(50),
         child: Observer(builder: (context) {
-          _corPokemon = ConstsAPI.getColorType(
-                  type: _pokeApiStore.pokemonAtual.type[0]);
           return AppBar(
             title: Opacity(
               opacity: 0,
@@ -40,7 +47,7 @@ class PokeDetailPage extends StatelessWidget {
               ),
             ),
             elevation: 0,
-            backgroundColor: _corPokemon,
+            backgroundColor: _pokeApiStore.corPokemon,
             leading: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () => Navigator.pop(context),
@@ -59,10 +66,8 @@ class PokeDetailPage extends StatelessWidget {
         children: [
           Observer(
             builder: (context) {
-              _corPokemon = ConstsAPI.getColorType(
-                  type: _pokeApiStore.pokemonAtual.type[0]);
               return Container(
-                color: _corPokemon,
+                color: _pokeApiStore.corPokemon,
               );
             },
           ),
@@ -86,6 +91,7 @@ class PokeDetailPage extends StatelessWidget {
             child: SizedBox(
               height: 150,
               child: PageView.builder(
+                controller: _pageController,
                 onPageChanged: (index) {
                   _pokeApiStore.setPokemonAtual(index: index);
                 },
