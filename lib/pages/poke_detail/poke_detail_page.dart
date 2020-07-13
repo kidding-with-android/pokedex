@@ -138,7 +138,7 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
                           return Transform.rotate(
                             angle: value.get(AniProps.rotation) * math.pi,
                             child: Hero(
-                              tag: index.toString(),
+                              tag: _pokeitem.name + 'rotation',
                               child: Opacity(
                                 child: Image.asset(
                                   ConstsApp.whitePokeball,
@@ -159,15 +159,20 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
                           curve: Curves.bounceInOut,
                           padding: EdgeInsets.all(
                               index == _pokeApiStore.posicaoAtual ? 0 : 60),
-                          child: CachedNetworkImage(
-                            height: 160,
-                            width: 160,
-                            placeholder: (context, url) => new Container(
-                              color: Colors.transparent,
+                          child: Hero(
+                            tag: _pokeitem.name,
+                            child: CachedNetworkImage(
+                              height: 160,
+                              width: 160,
+                              placeholder: (context, url) => new Container(
+                                color: Colors.transparent,
+                              ),
+                              color: index == _pokeApiStore.posicaoAtual
+                                  ? null
+                                  : Colors.black.withOpacity(0.5),
+                              imageUrl:
+                                  'https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/${_pokeitem.num}.png',
                             ),
-                            color: index == _pokeApiStore.posicaoAtual ? null : Colors.black.withOpacity(0.5),
-                            imageUrl:
-                                'https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/${_pokeitem.num}.png',
                           ),
                         );
                       }),
