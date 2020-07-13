@@ -65,7 +65,10 @@ class PokeItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 8.0, top: 8.0,),
+                    padding: const EdgeInsets.only(
+                      left: 8.0,
+                      top: 8.0,
+                    ),
                     child: Text(
                       name,
                       style: TextStyle(
@@ -84,13 +87,16 @@ class PokeItem extends StatelessWidget {
               ),
               Align(
                 alignment: Alignment.bottomRight,
-                child: Opacity(
-                  child: Image.asset(
-                    ConstsApp.whitePokeball,
-                    height: 80,
-                    width: 80,
+                child: Hero(
+                  tag: index.toString(),
+                  child: Opacity(
+                    child: Image.asset(
+                      ConstsApp.whitePokeball,
+                      height: 80,
+                      width: 80,
+                    ),
+                    opacity: 0.2,
                   ),
-                  opacity: 0.2,
                 ),
               ),
               Align(

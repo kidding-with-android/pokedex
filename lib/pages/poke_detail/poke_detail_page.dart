@@ -1,9 +1,13 @@
+import 'dart:math' as math;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
+import 'package:pokedex/consts/consts_app.dart';
 import 'package:pokedex/models/pokeapi.dart';
 import 'package:pokedex/stores/pokeapi_store.dart';
+import 'package:simple_animations/simple_animations.dart';
+import 'package:supercharged/supercharged.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 
 class PokeDetailPage extends StatefulWidget {
@@ -15,10 +19,13 @@ class PokeDetailPage extends StatefulWidget {
   _PokeDetailPageState createState() => _PokeDetailPageState();
 }
 
+enum AniProps { size, color, rotation }
+
 class _PokeDetailPageState extends State<PokeDetailPage> {
   PageController _pageController;
   PokeApiStore _pokeApiStore;
   Pokemon _pokemon;
+  MultiTween<AniProps> _animation;
 
   @override
   void initState() {
@@ -26,6 +33,30 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
     _pageController = PageController(initialPage: widget.index);
     _pokeApiStore = GetIt.instance<PokeApiStore>();
     _pokemon = _pokeApiStore.pokemonAtual;
+
+    _animation = MultiTween<AniProps>()
+      // ..add(AniProps.size, 0.0.tweenTo(150.0), 4.seconds)
+      // ..add(AniProps.color, Colors.red.tweenTo(Colors.blue), 2.seconds, Curves.easeIn)
+      // ..add(AniProps.color, Colors.blue.tweenTo(Colors.green), 2.seconds, Curves.easeOut)
+      // ..add(AniProps.rotation, 0.0.tweenTo(0.0), 1.seconds)
+      ..add(AniProps.rotation, 0.0.tweenTo(1.0), 4.seconds, Curves.linear);
+
+    // final tween = MultiTween([
+    //   Track('size').add(Duration(seconds: 4), Tween(begin: 0.0, end: 150.0)),
+    //   Track('color')
+    //     .add(Duration(seconds: 2),
+    //       ColorTween(begin: Colors.red, end: Colors.blue),
+    //       curve: Curves.easeIn)
+    //     .add(Duration(seconds: 2),
+    //       ColorTween(begin: Colors.blue, end: Colors.green),
+    //       curve: Curves.easeOut),
+    //   Track('rotation')
+    //     .add(Duration(seconds: 1),
+    //       ConstantTween(0))
+    //     .add(Duration(seconds: 3),
+    //       Tween(begin: 0, end: pi / 2),
+    //       curve: Curves.easeOutSine)
+    // ]);
   }
 
   @override
@@ -76,7 +107,7 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
           ),
           SlidingSheet(
             elevation: 0,
-            cornerRadius: 16,
+            cornerRadius: 30,
             snapSpec: const SnapSpec(
                 snap: true,
                 snappings: [0.7, 1.0],
@@ -89,7 +120,7 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
           ),
           Padding(
             child: SizedBox(
-              height: 150,
+              height: 200,
               child: PageView.builder(
                 controller: _pageController,
                 onPageChanged: (index) {
@@ -99,19 +130,53 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
                 itemBuilder: (context, index) {
                   Pokemon _pokeitem = _pokeApiStore.getPokemon(index: index);
 
-                  return CachedNetworkImage(
-                    height: 60,
-                    width: 60,
-                    placeholder: (context, url) => new Container(
-                      color: Colors.transparent,
-                    ),
-                    imageUrl:
-                        'https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/${_pokeitem.num}.png',
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      LoopAnimation<MultiTweenValues<AniProps>>(
+                        builder: (context, child, value) {
+                          return Transform.rotate(
+                            angle: value.get(AniProps.rotation) * math.pi,
+                            child: Hero(
+                              tag: index.toString(),
+                              child: Opacity(
+                                child: Image.asset(
+                                  ConstsApp.whitePokeball,
+                                  height: 270,
+                                  width: 270,
+                                ),
+                                opacity: 0.2,
+                              ),
+                            ),
+                          );
+                        },
+                        tween: _animation,
+                        duration: _animation.duration,
+                      ),
+                      Observer(builder: (context) {
+                        return AnimatedPadding(
+                          duration: Duration(milliseconds: 400),
+                          curve: Curves.bounceInOut,
+                          padding: EdgeInsets.all(
+                              index == _pokeApiStore.posicaoAtual ? 0 : 60),
+                          child: CachedNetworkImage(
+                            height: 160,
+                            width: 160,
+                            placeholder: (context, url) => new Container(
+                              color: Colors.transparent,
+                            ),
+                            color: index == _pokeApiStore.posicaoAtual ? null : Colors.black.withOpacity(0.5),
+                            imageUrl:
+                                'https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/${_pokeitem.num}.png',
+                          ),
+                        );
+                      }),
+                    ],
                   );
                 },
               ),
             ),
-            padding: EdgeInsets.only(top: 50),
+            padding: EdgeInsets.only(top: 60),
           )
         ],
       ),
