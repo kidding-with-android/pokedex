@@ -26,6 +26,10 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
   PokeApiStore _pokeApiStore;
   Pokemon _pokemon;
   MultiTween<AniProps> _animation;
+  double _progress;
+  double _multiple;
+  double _opacity;
+  double _opacityTitleAppBar;
 
   @override
   void initState() {
@@ -35,28 +39,21 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
     _pokemon = _pokeApiStore.pokemonAtual;
 
     _animation = MultiTween<AniProps>()
-      // ..add(AniProps.size, 0.0.tweenTo(150.0), 4.seconds)
-      // ..add(AniProps.color, Colors.red.tweenTo(Colors.blue), 2.seconds, Curves.easeIn)
-      // ..add(AniProps.color, Colors.blue.tweenTo(Colors.green), 2.seconds, Curves.easeOut)
-      // ..add(AniProps.rotation, 0.0.tweenTo(0.0), 1.seconds)
       ..add(AniProps.rotation, 0.0.tweenTo(1.0), 4.seconds, Curves.linear);
 
-    // final tween = MultiTween([
-    //   Track('size').add(Duration(seconds: 4), Tween(begin: 0.0, end: 150.0)),
-    //   Track('color')
-    //     .add(Duration(seconds: 2),
-    //       ColorTween(begin: Colors.red, end: Colors.blue),
-    //       curve: Curves.easeIn)
-    //     .add(Duration(seconds: 2),
-    //       ColorTween(begin: Colors.blue, end: Colors.green),
-    //       curve: Curves.easeOut),
-    //   Track('rotation')
-    //     .add(Duration(seconds: 1),
-    //       ConstantTween(0))
-    //     .add(Duration(seconds: 3),
-    //       Tween(begin: 0, end: pi / 2),
-    //       curve: Curves.easeOutSine)
-    // ]);
+    _progress = 0;
+    _multiple = 1;
+    _opacity = 1;
+    _opacityTitleAppBar = 0;
+  }
+
+  double interval(double lower, double upper, double progress) {
+    assert(lower < upper);
+
+    if (progress > upper) return 1.0;
+    if (progress < lower) return 0.0;
+
+    return ((progress - lower) / (upper - lower)).clamp(0.0, 1.0);
   }
 
   @override
@@ -67,7 +64,7 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
         child: Observer(builder: (context) {
           return AppBar(
             title: Opacity(
-              opacity: 0,
+              opacity: _opacityTitleAppBar,
               child: Text(
                 _pokemon.name,
                 style: TextStyle(
@@ -84,9 +81,31 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
               onPressed: () => Navigator.pop(context),
             ),
             actions: [
-              IconButton(
-                icon: Icon(Icons.favorite_border),
-                onPressed: () {},
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  LoopAnimation<MultiTweenValues<AniProps>>(
+                    builder: (context, child, value) {
+                      return Transform.rotate(
+                        angle: value.get(AniProps.rotation) * math.pi,
+                        child: Opacity(
+                          child: Image.asset(
+                            ConstsApp.whitePokeball,
+                            height: 50,
+                            width: 50,
+                          ),
+                          opacity: _opacityTitleAppBar * 0.2,
+                        ),
+                      );
+                    },
+                    tween: _animation,
+                    duration: _animation.duration,
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.favorite_border),
+                    onPressed: () {},
+                  ),
+                ],
               ),
             ],
           );
@@ -106,6 +125,15 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
             height: MediaQuery.of(context).size.height / 3,
           ),
           SlidingSheet(
+            listener: (state) {
+              setState(() {
+                _progress = state.progress;
+                _multiple = 1 - interval(0.0, 0.7, _progress);
+                _opacity = _multiple;
+                _opacityTitleAppBar =
+                    _multiple = interval(0.55, 0.8, _progress);
+              });
+            },
             elevation: 0,
             cornerRadius: 30,
             snapSpec: const SnapSpec(
@@ -118,70 +146,73 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
               );
             },
           ),
-          Padding(
-            child: SizedBox(
-              height: 200,
-              child: PageView.builder(
-                controller: _pageController,
-                onPageChanged: (index) {
-                  _pokeApiStore.setPokemonAtual(index: index);
-                },
-                itemCount: _pokeApiStore.pokeAPI.pokemon.length,
-                itemBuilder: (context, index) {
-                  Pokemon _pokeitem = _pokeApiStore.getPokemon(index: index);
+          Opacity(
+            opacity: _opacity,
+            child: Padding(
+              child: SizedBox(
+                height: 200,
+                child: PageView.builder(
+                  controller: _pageController,
+                  onPageChanged: (index) {
+                    _pokeApiStore.setPokemonAtual(index: index);
+                  },
+                  itemCount: _pokeApiStore.pokeAPI.pokemon.length,
+                  itemBuilder: (context, index) {
+                    Pokemon _pokeitem = _pokeApiStore.getPokemon(index: index);
 
-                  return Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      LoopAnimation<MultiTweenValues<AniProps>>(
-                        builder: (context, child, value) {
-                          return Transform.rotate(
-                            angle: value.get(AniProps.rotation) * math.pi,
-                            child: Hero(
-                              tag: _pokeitem.name + 'rotation',
-                              child: Opacity(
-                                child: Image.asset(
-                                  ConstsApp.whitePokeball,
-                                  height: 270,
-                                  width: 270,
+                    return Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        LoopAnimation<MultiTweenValues<AniProps>>(
+                          builder: (context, child, value) {
+                            return Transform.rotate(
+                              angle: value.get(AniProps.rotation) * math.pi,
+                              child: Hero(
+                                tag: _pokeitem.name + 'rotation',
+                                child: Opacity(
+                                  child: Image.asset(
+                                    ConstsApp.whitePokeball,
+                                    height: 270,
+                                    width: 270,
+                                  ),
+                                  opacity: 0.2,
                                 ),
-                                opacity: 0.2,
+                              ),
+                            );
+                          },
+                          tween: _animation,
+                          duration: _animation.duration,
+                        ),
+                        Observer(builder: (context) {
+                          return AnimatedPadding(
+                            duration: Duration(milliseconds: 400),
+                            curve: Curves.bounceInOut,
+                            padding: EdgeInsets.all(
+                                index == _pokeApiStore.posicaoAtual ? 0 : 60),
+                            child: Hero(
+                              tag: _pokeitem.name,
+                              child: CachedNetworkImage(
+                                height: 160,
+                                width: 160,
+                                placeholder: (context, url) => new Container(
+                                  color: Colors.transparent,
+                                ),
+                                color: index == _pokeApiStore.posicaoAtual
+                                    ? null
+                                    : Colors.black.withOpacity(0.5),
+                                imageUrl:
+                                    'https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/${_pokeitem.num}.png',
                               ),
                             ),
                           );
-                        },
-                        tween: _animation,
-                        duration: _animation.duration,
-                      ),
-                      Observer(builder: (context) {
-                        return AnimatedPadding(
-                          duration: Duration(milliseconds: 400),
-                          curve: Curves.bounceInOut,
-                          padding: EdgeInsets.all(
-                              index == _pokeApiStore.posicaoAtual ? 0 : 60),
-                          child: Hero(
-                            tag: _pokeitem.name,
-                            child: CachedNetworkImage(
-                              height: 160,
-                              width: 160,
-                              placeholder: (context, url) => new Container(
-                                color: Colors.transparent,
-                              ),
-                              color: index == _pokeApiStore.posicaoAtual
-                                  ? null
-                                  : Colors.black.withOpacity(0.5),
-                              imageUrl:
-                                  'https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/${_pokeitem.num}.png',
-                            ),
-                          ),
-                        );
-                      }),
-                    ],
-                  );
-                },
+                        }),
+                      ],
+                    );
+                  },
+                ),
               ),
+              padding: EdgeInsets.only(top: _opacityTitleAppBar == 1 ? 1000 : (60 - _progress * 50)),
             ),
-            padding: EdgeInsets.only(top: 60),
           )
         ],
       ),
