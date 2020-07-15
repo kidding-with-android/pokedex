@@ -5,6 +5,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pokedex/consts/consts_app.dart';
 import 'package:pokedex/models/pokeapi.dart';
+import 'package:pokedex/pages/about_page/about_page.dart';
 import 'package:pokedex/stores/pokeapi_store.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
@@ -65,6 +66,16 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
           Observer(
             builder: (context) {
               return AnimatedContainer(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      _pokeApiStore.corPokemon.withOpacity(0.7),
+                      _pokeApiStore.corPokemon
+                    ],
+                  ),
+                ),
                 child: Stack(
                   children: [
                     AppBar(
@@ -150,7 +161,6 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
                     )
                   ],
                 ),
-                color: _pokeApiStore.corPokemon,
                 duration: Duration(milliseconds: 300),
               );
             },
@@ -172,7 +182,9 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
                 positioning: SnapPositioning.relativeToAvailableSpace),
             builder: (context, state) {
               return Container(
-                height: MediaQuery.of(context).size.height,
+                height: MediaQuery.of(context).size.height -
+                    (MediaQuery.of(context).size.height * 0.12),
+                child: AboutPage(),
               );
             },
           ),
