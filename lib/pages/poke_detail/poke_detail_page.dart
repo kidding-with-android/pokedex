@@ -197,16 +197,16 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
                           builder: (context, child, value) {
                             return Transform.rotate(
                               angle: value.get(AniProps.rotation) * math.pi,
-                              child: Hero(
-                                tag: _pokeitem.name + 'rotation',
-                                child: Opacity(
-                                  child: Image.asset(
-                                    ConstsApp.whitePokeball,
-                                    height: 270,
-                                    width: 270,
-                                  ),
-                                  opacity: 0.2,
+                              child: AnimatedOpacity(
+                                child: Image.asset(
+                                  ConstsApp.whitePokeball,
+                                  height: 270,
+                                  width: 270,
                                 ),
+                                opacity: index == _pokeApiStore.posicaoAtual
+                                    ? 0.2
+                                    : 0,
+                                duration: Duration(milliseconds: 200),
                               ),
                             );
                           },
