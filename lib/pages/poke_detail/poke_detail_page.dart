@@ -41,6 +41,9 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
     _pokeApiStore = GetIt.instance<PokeApiStore>();
     _pokeApiV2Store = GetIt.instance<PokeApiV2Store>();
 
+    _pokeApiV2Store.getInfoPokemon(_pokeApiStore.pokemonAtual.name);
+    _pokeApiV2Store.getInfoSpecie(_pokeApiStore.pokemonAtual.id.toString());
+
     _animation = MultiTween<AniProps>()
       ..add(AniProps.rotation, 0.0.tweenTo(1.0), 4.seconds, Curves.linear);
 

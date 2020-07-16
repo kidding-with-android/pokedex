@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:md2_tab_indicator/md2_tab_indicator.dart';
-import 'package:pokedex/models/specie.dart';
-import 'package:pokedex/stores/pokeapiv2_store.dart';
+import 'package:pokedex/pages/about_page/widget/aba_sobre.dart';
 import 'package:pokedex/stores/pokeapi_store.dart';
 
 class AboutPage extends StatefulWidget {
@@ -16,7 +15,6 @@ class _AboutPageState extends State<AboutPage>
   TabController _tabController;
   PageController _pageController;
   PokeApiStore _pokeApiStore;
-  PokeApiV2Store _pokeApiV2Store;
 
   @override
   void initState() {
@@ -24,7 +22,6 @@ class _AboutPageState extends State<AboutPage>
     _tabController = TabController(length: 3, vsync: this);
     _pageController = PageController(initialPage: 0);
     _pokeApiStore = GetIt.instance<PokeApiStore>();
-    _pokeApiV2Store = GetIt.instance<PokeApiV2Store>();
   }
 
   @override
@@ -76,49 +73,7 @@ class _AboutPageState extends State<AboutPage>
         },
         controller: _pageController,
         children: <Widget>[
-          Container(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    'Descrição',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Observer(
-                    builder: (context) {
-                      Specie _specie = _pokeApiV2Store.specie;
-
-                      return _specie != null
-                          ? Text(
-                              _specie.flavorTextEntries
-                                  .where((item) => item.language.name == 'en')
-                                  .first
-                                  .flavorText,
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
-                            )
-                          : SizedBox(
-                              height: 15,
-                              width: 15,
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    _pokeApiStore.corPokemon),
-                              ));
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
+          AbaSobre(),
           Container(
             color: Colors.blue,
           ),

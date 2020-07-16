@@ -19,6 +19,7 @@ abstract class _PokeApiV2StoreBase with Store {
   @action
   Future<void> getInfoPokemon(String nome) async {
     try {
+      pokeApiV2 = null;
       final response =
           await http.get(ConstsAPI.pokeapiv2URL + nome.toLowerCase());
       var decodeJson = jsonDecode(response.body);
@@ -32,6 +33,7 @@ abstract class _PokeApiV2StoreBase with Store {
   @action
   Future<void> getInfoSpecie(String numPokemon) async {
     try {
+      specie = null;
       final response =
           await http.get(ConstsAPI.pokeapiv2EspeciesURL + numPokemon);
       var decodeJson = jsonDecode(response.body);
