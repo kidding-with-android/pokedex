@@ -233,7 +233,8 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
                           tween: _animation,
                           duration: _animation.duration,
                         ),
-                        Observer(
+                        IgnorePointer(
+                          child: Observer(
                             name: 'Pokemon',
                             builder: (context) {
                               return AnimatedPadding(
@@ -262,7 +263,9 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
                                   ),
                                 ),
                               );
-                            }),
+                            },
+                          ),
+                        ),
                       ],
                     );
                   },
