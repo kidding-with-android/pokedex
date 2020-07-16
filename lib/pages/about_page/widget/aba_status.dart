@@ -8,8 +8,9 @@ class AbaStatus extends StatelessWidget {
   final PokeApiV2Store _pokeApiV2Store = GetIt.instance<PokeApiV2Store>();
 
   List<int> getStatusPokemon(PokeApiV2 pokeApiV2) {
-    List<int> _list = [0, 1, 2, 3, 4, 5, 6];
+    List<int> _list = [0, 0, 0, 0, 0, 0, 0];
     int sum = 0;
+
     pokeApiV2.stats.forEach((stat) {
       switch (stat.stat.name) {
         case 'speed':
@@ -38,143 +39,7 @@ class AbaStatus extends StatelessWidget {
     return _list;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-        child: Container(
-          child: Observer(builder: (context) {
-            return Row(
-              children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      'Velocidade',
-                      style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Sp. Def',
-                      style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Sp. Atq',
-                      style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Defesa',
-                      style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Ataque',
-                      style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'HP',
-                      style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Total',
-                      style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                    ),
-                  ],
-                ),
-                SizedBox(width: 10),
-                Observer(builder: (context) {
-                  List<int> _list = getStatusPokemon(_pokeApiV2Store.pokeApiV2);
-                  return Column(
-                    children: <Widget>[
-                      Text(
-                        _list[0].toString(),
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        _list[1].toString(),
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        _list[2].toString(),
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        _list[3].toString(),
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        _list[4].toString(),
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        _list[5].toString(),
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        _list[6].toString(),
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  );
-                }),
-                SizedBox(width: 10),
-                Observer(builder: (context) {
-                  List<int> _list = getStatusPokemon(_pokeApiV2Store.pokeApiV2);
-
-                  return Expanded(
-                    child: Column(
-                      children: <Widget>[
-                        StatusBar(widthFactor: _list[0] / 160),
-                        SizedBox(height: 10),
-                        StatusBar(widthFactor: _list[1] / 160),
-                        SizedBox(height: 10),
-                        StatusBar(widthFactor: _list[2] / 160),
-                        SizedBox(height: 10),
-                        StatusBar(widthFactor: _list[3] / 160),
-                        SizedBox(height: 10),
-                        StatusBar(widthFactor: _list[4] / 160),
-                        SizedBox(height: 10),
-                        StatusBar(widthFactor: _list[5] / 160),
-                        SizedBox(height: 10),
-                        StatusBar(widthFactor: _list[6] / 600),
-                      ],
-                    ),
-                  );
-                }),
-              ],
-            );
-          }),
-        ),
-      ),
-    );
-  }
-}
-
-class StatusBar extends StatelessWidget {
-  final double widthFactor;
-
-  const StatusBar({Key key, this.widthFactor}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _statusBar({double widthFactor}) {
     return SizedBox(
       height: 16,
       child: Center(
@@ -195,6 +60,59 @@ class StatusBar extends StatelessWidget {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  TableRow _statusRow({String name, int value, int maxValue}) {
+    return TableRow(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Text(
+            name,
+            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Center(
+            child: Text(
+              value.toString(),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: _statusBar(widthFactor: value / maxValue),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+        child: Container(
+          child: Observer(builder: (context) {
+            List<int> _list = getStatusPokemon(_pokeApiV2Store.pokeApiV2);
+            return Table(
+              columnWidths: {0: FractionColumnWidth(.2), 1: FractionColumnWidth(.2), 2: FractionColumnWidth(.6)},
+              children: [
+                _statusRow(name: 'Velocidade', value: _list[0], maxValue: 160),
+                _statusRow(name: 'Sp. Def', value: _list[1], maxValue: 160),
+                _statusRow(name: 'Sp. Atq', value: _list[2], maxValue: 160),
+                _statusRow(name: 'Defesa', value: _list[3], maxValue: 160),
+                _statusRow(name: 'Ataque', value: _list[4], maxValue: 160),
+                _statusRow(name: 'HP', value: _list[5], maxValue: 160),
+                _statusRow(name: 'Total', value: _list[6], maxValue: 700),
+              ],
+            );
+          }),
         ),
       ),
     );
