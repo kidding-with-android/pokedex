@@ -7,6 +7,7 @@ import 'package:pokedex/consts/consts_app.dart';
 import 'package:pokedex/models/pokeapi.dart';
 import 'package:pokedex/pages/about_page/about_page.dart';
 import 'package:pokedex/stores/pokeapi_store.dart';
+import 'package:pokedex/stores/pokeapiv2_store.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
@@ -25,7 +26,7 @@ enum AniProps { size, color, rotation }
 class _PokeDetailPageState extends State<PokeDetailPage> {
   PageController _pageController;
   PokeApiStore _pokeApiStore;
-  Pokemon _pokemon;
+  PokeApiV2Store _pokeApiV2Store;
   MultiTween<AniProps> _animation;
   double _progress;
   double _multiple;
@@ -38,7 +39,7 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
     _pageController =
         PageController(initialPage: widget.index, viewportFraction: 0.5);
     _pokeApiStore = GetIt.instance<PokeApiStore>();
-    _pokemon = _pokeApiStore.pokemonAtual;
+    _pokeApiV2Store = GetIt.instance<PokeApiV2Store>();
 
     _animation = MultiTween<AniProps>()
       ..add(AniProps.rotation, 0.0.tweenTo(1.0), 4.seconds, Curves.linear);
@@ -197,6 +198,10 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
                   controller: _pageController,
                   onPageChanged: (index) {
                     _pokeApiStore.setPokemonAtual(index: index);
+                    _pokeApiV2Store
+                        .getInfoPokemon(_pokeApiStore.pokemonAtual.name);
+                    _pokeApiV2Store.getInfoSpecie(
+                        _pokeApiStore.pokemonAtual.id.toString());
                   },
                   itemCount: _pokeApiStore.pokeAPI.pokemon.length,
                   itemBuilder: (context, index) {
