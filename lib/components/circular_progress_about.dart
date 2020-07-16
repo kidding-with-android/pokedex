@@ -13,7 +13,7 @@ class CircularProgressAbout extends StatelessWidget {
           width: 15,
           child: CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(
-                GetIt.instance<PokeApiStore>().corPokemon),
+                GetIt.instance<PokeApiStore>().currentPokemonColor),
           ),
         ),
       ),

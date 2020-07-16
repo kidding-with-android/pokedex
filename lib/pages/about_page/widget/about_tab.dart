@@ -6,7 +6,7 @@ import 'package:pokedex/models/specie.dart';
 import 'package:pokedex/stores/pokeapiv2_store.dart';
 import 'package:pokedex/stores/pokeapi_store.dart';
 
-class AbaSobre extends StatelessWidget {
+class AboutTab extends StatelessWidget {
   final PokeApiV2Store _pokeApiV2Store = GetIt.instance<PokeApiV2Store>();
   final PokeApiStore _pokeApiStore = GetIt.instance<PokeApiStore>();
 
@@ -41,7 +41,8 @@ class AbaSobre extends StatelessWidget {
                               _specie.flavorTextEntries
                                   .where((item) => item.language.name == 'en')
                                   .first
-                                  .flavorText,
+                                  .flavorText
+                                  .replaceAll(RegExp(r'\s'), ' '),
                               style: TextStyle(
                                 fontSize: 14,
                               ),
@@ -81,7 +82,7 @@ class AbaSobre extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            _pokeApiStore.pokemonAtual.height,
+                            _pokeApiStore.currentPokemon.height,
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.black,
@@ -104,7 +105,7 @@ class AbaSobre extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            _pokeApiStore.pokemonAtual.weight,
+                            _pokeApiStore.currentPokemon.weight,
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.black,

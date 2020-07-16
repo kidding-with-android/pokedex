@@ -34,7 +34,7 @@ abstract class _PokeApiV2StoreBase with Store {
     try {
       specie = null;
       final response =
-          await http.get(ConstsAPI.pokeapiv2EspeciesURL + numPokemon);
+          await http.get(ConstsAPI.pokeapiv2SpeciesURL + numPokemon);
       var decodeJson = jsonDecode(response.body);
       specie = Specie.fromJson(decodeJson);
     } catch (error, stacktrace) {

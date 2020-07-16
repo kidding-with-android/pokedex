@@ -4,23 +4,23 @@ import 'package:get_it/get_it.dart';
 import 'package:pokedex/models/pokeapi.dart';
 import 'package:pokedex/stores/pokeapi_store.dart';
 
-class AbaEvolucao extends StatelessWidget {
+class EvolutionTab extends StatelessWidget {
   final PokeApiStore _pokeApiStore = GetIt.instance<PokeApiStore>();
 
-  Widget resizePokemon(Widget widget) {
+  Widget _resizePokemon({Widget child, double size = 80.0}) {
     return SizedBox(
-      height: 80,
-      width: 80,
-      child: widget,
+      height: size,
+      width: size,
+      child: child,
     );
   }
 
-  List<Widget> getEvolucao(Pokemon pokemon, Color cor) {
+  List<Widget> _getEvolution(Pokemon pokemon, Color cor) {
     List<Widget> _list = [];
 
     if (pokemon.prevEvolution != null) {
       pokemon.prevEvolution.forEach((evo) {
-        _list.add(resizePokemon(_pokeApiStore.getImage(numero: evo.num)));
+        _list.add(_resizePokemon(child: _pokeApiStore.getImage(num: evo.num)));
         _list.add(Padding(
           padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
           child: Text(
@@ -39,7 +39,8 @@ class AbaEvolucao extends StatelessWidget {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(90),
             color: cor.withOpacity(0.2)),
-        child: resizePokemon(_pokeApiStore.getImage(numero: pokemon.num))));
+        child: _resizePokemon(
+            child: _pokeApiStore.getImage(num: pokemon.num), size: 100.0)));
     _list.add(Padding(
       padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
       child: Text(
@@ -54,7 +55,7 @@ class AbaEvolucao extends StatelessWidget {
     if (pokemon.nextEvolution != null) {
       pokemon.nextEvolution.forEach((evo) {
         _list.add(Icon(Icons.keyboard_arrow_down));
-        _list.add(resizePokemon(_pokeApiStore.getImage(numero: evo.num)));
+        _list.add(_resizePokemon(child: _pokeApiStore.getImage(num: evo.num)));
         _list.add(Padding(
           padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
           child: Text(
@@ -78,12 +79,12 @@ class AbaEvolucao extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
         child: Container(
           child: Observer(builder: (context) {
-            Pokemon pokemon = _pokeApiStore.pokemonAtual;
-            Color cor = _pokeApiStore.corPokemon;
+            Pokemon pokemon = _pokeApiStore.currentPokemon;
+            Color cor = _pokeApiStore.currentPokemonColor;
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: getEvolucao(pokemon, cor),
+                children: _getEvolution(pokemon, cor),
               ),
             );
           }),

@@ -41,8 +41,8 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
     _pokeApiStore = GetIt.instance<PokeApiStore>();
     _pokeApiV2Store = GetIt.instance<PokeApiV2Store>();
 
-    _pokeApiV2Store.getInfoPokemon(_pokeApiStore.pokemonAtual.name);
-    _pokeApiV2Store.getInfoSpecie(_pokeApiStore.pokemonAtual.id.toString());
+    _pokeApiV2Store.getInfoPokemon(_pokeApiStore.currentPokemon.name);
+    _pokeApiV2Store.getInfoSpecie(_pokeApiStore.currentPokemon.id.toString());
 
     _animation = MultiTween<AniProps>()
       ..add(AniProps.rotation, 0.0.tweenTo(1.0), 4.seconds, Curves.linear);
@@ -75,8 +75,8 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      _pokeApiStore.corPokemon.withOpacity(0.7),
-                      _pokeApiStore.corPokemon
+                      _pokeApiStore.currentPokemonColor.withOpacity(0.7),
+                      _pokeApiStore.currentPokemonColor
                     ],
                   ),
                 ),
@@ -127,7 +127,7 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
                           _progress *
                               (MediaQuery.of(context).size.height * 0.060),
                       child: Text(
-                        _pokeApiStore.pokemonAtual.name,
+                        _pokeApiStore.currentPokemon.name,
                         style: TextStyle(
                           fontFamily: 'Google',
                           fontSize: 38 -
@@ -148,9 +148,10 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              setTipos(_pokeApiStore.pokemonAtual.type),
+                              setTipos(_pokeApiStore.currentPokemon.type),
                               Text(
-                                '#' + _pokeApiStore.pokemonAtual.num.toString(),
+                                '#' +
+                                    _pokeApiStore.currentPokemon.num.toString(),
                                 style: TextStyle(
                                   fontFamily: 'Google',
                                   fontSize: 26,
@@ -202,9 +203,9 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
                   onPageChanged: (index) {
                     _pokeApiStore.setPokemonAtual(index: index);
                     _pokeApiV2Store
-                        .getInfoPokemon(_pokeApiStore.pokemonAtual.name);
+                        .getInfoPokemon(_pokeApiStore.currentPokemon.name);
                     _pokeApiV2Store.getInfoSpecie(
-                        _pokeApiStore.pokemonAtual.id.toString());
+                        _pokeApiStore.currentPokemon.id.toString());
                   },
                   itemCount: _pokeApiStore.pokeAPI.pokemon.length,
                   itemBuilder: (context, index) {
@@ -223,9 +224,10 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
                                   height: 270,
                                   width: 270,
                                 ),
-                                opacity: index == _pokeApiStore.posicaoAtual
-                                    ? 0.2
-                                    : 0,
+                                opacity:
+                                    index == _pokeApiStore.currentPokemonIndex
+                                        ? 0.2
+                                        : 0,
                                 duration: Duration(milliseconds: 200),
                               ),
                             );
@@ -241,13 +243,14 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
                                 duration: Duration(milliseconds: 400),
                                 curve: Curves.bounceInOut,
                                 padding: EdgeInsets.all(
-                                    index == _pokeApiStore.posicaoAtual
+                                    index == _pokeApiStore.currentPokemonIndex
                                         ? 0
                                         : 60),
                                 child: Hero(
-                                  tag: index == _pokeApiStore.posicaoAtual
-                                      ? _pokeitem.name
-                                      : 'none' + index.toString(),
+                                  tag:
+                                      index == _pokeApiStore.currentPokemonIndex
+                                          ? _pokeitem.name
+                                          : 'none' + index.toString(),
                                   child: CachedNetworkImage(
                                     height: 160,
                                     width: 160,
@@ -255,7 +258,8 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
                                         new Container(
                                       color: Colors.transparent,
                                     ),
-                                    color: index == _pokeApiStore.posicaoAtual
+                                    color: index ==
+                                            _pokeApiStore.currentPokemonIndex
                                         ? null
                                         : Colors.black.withOpacity(0.5),
                                     imageUrl:

@@ -6,7 +6,7 @@ import 'package:pokedex/consts/consts_app.dart';
 import 'package:pokedex/models/pokeapi.dart';
 import 'package:pokedex/pages/home_page/widgets/app_bar_home.dart';
 import 'package:pokedex/pages/home_page/widgets/poke_item.dart';
-import 'package:pokedex/pages/poke_detail/poke_detail_page.dart';
+import 'package:pokedex/pages/poke_detail_page/poke_detail_page.dart';
 import 'package:pokedex/stores/pokeapi_store.dart';
 
 class HomePage extends StatefulWidget {
@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
         overflow: Overflow.visible,
         children: <Widget>[
           Positioned(
-            top:  MediaQuery.of(context).padding.top - (240 / 2.9),
+            top: MediaQuery.of(context).padding.top - (240 / 2.9),
             left: screenWidth - (240 / 1.6),
             child: Opacity(
               child: Image.asset(
@@ -90,7 +90,8 @@ class _HomePageState extends State<HomePage> {
                                             num: pokemon.num,
                                           ),
                                           onTap: () {
-                                            _pokeApiStore.setPokemonAtual(index: index);
+                                            _pokeApiStore.setPokemonAtual(
+                                                index: index);
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(

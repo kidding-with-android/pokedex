@@ -4,12 +4,14 @@ import 'package:get_it/get_it.dart';
 import 'package:pokedex/models/pokeapiv2.dart';
 import 'package:pokedex/stores/pokeapiv2_store.dart';
 
-class AbaStatus extends StatelessWidget {
+class StatusTab extends StatelessWidget {
   final PokeApiV2Store _pokeApiV2Store = GetIt.instance<PokeApiV2Store>();
 
   List<int> getStatusPokemon(PokeApiV2 pokeApiV2) {
     List<int> _list = [0, 0, 0, 0, 0, 0, 0];
     int sum = 0;
+
+    if (pokeApiV2 == null) return _list;
 
     pokeApiV2.stats.forEach((stat) {
       switch (stat.stat.name) {
@@ -101,7 +103,11 @@ class AbaStatus extends StatelessWidget {
           child: Observer(builder: (context) {
             List<int> _list = getStatusPokemon(_pokeApiV2Store.pokeApiV2);
             return Table(
-              columnWidths: {0: FractionColumnWidth(.2), 1: FractionColumnWidth(.2), 2: FractionColumnWidth(.6)},
+              columnWidths: {
+                0: FractionColumnWidth(.2),
+                1: FractionColumnWidth(.2),
+                2: FractionColumnWidth(.6)
+              },
               children: [
                 _statusRow(name: 'Velocidade', value: _list[0], maxValue: 160),
                 _statusRow(name: 'Sp. Def', value: _list[1], maxValue: 160),

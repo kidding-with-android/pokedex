@@ -16,13 +16,13 @@ mixin _$PokeApiStore on _PokeApiStoreBase, Store {
       (_$pokeAPIComputed ??= Computed<PokeAPI>(() => super.pokeAPI,
               name: '_PokeApiStoreBase.pokeAPI'))
           .value;
-  Computed<Pokemon> _$pokemonAtualComputed;
+  Computed<Pokemon> _$currentPokemonComputed;
 
   @override
-  Pokemon get pokemonAtual =>
-      (_$pokemonAtualComputed ??= Computed<Pokemon>(() => super.pokemonAtual,
-              name: '_PokeApiStoreBase.pokemonAtual'))
-          .value;
+  Pokemon get currentPokemon => (_$currentPokemonComputed ??= Computed<Pokemon>(
+          () => super.currentPokemon,
+          name: '_PokeApiStoreBase.currentPokemon'))
+      .value;
 
   final _$_pokeAPIAtom = Atom(name: '_PokeApiStoreBase._pokeAPI');
 
@@ -39,48 +39,50 @@ mixin _$PokeApiStore on _PokeApiStoreBase, Store {
     });
   }
 
-  final _$_pokemonAtualAtom = Atom(name: '_PokeApiStoreBase._pokemonAtual');
+  final _$_currentPokemonAtom = Atom(name: '_PokeApiStoreBase._currentPokemon');
 
   @override
-  Pokemon get _pokemonAtual {
-    _$_pokemonAtualAtom.reportRead();
-    return super._pokemonAtual;
+  Pokemon get _currentPokemon {
+    _$_currentPokemonAtom.reportRead();
+    return super._currentPokemon;
   }
 
   @override
-  set _pokemonAtual(Pokemon value) {
-    _$_pokemonAtualAtom.reportWrite(value, super._pokemonAtual, () {
-      super._pokemonAtual = value;
+  set _currentPokemon(Pokemon value) {
+    _$_currentPokemonAtom.reportWrite(value, super._currentPokemon, () {
+      super._currentPokemon = value;
     });
   }
 
-  final _$corPokemonAtom = Atom(name: '_PokeApiStoreBase.corPokemon');
+  final _$currentPokemonColorAtom =
+      Atom(name: '_PokeApiStoreBase.currentPokemonColor');
 
   @override
-  Color get corPokemon {
-    _$corPokemonAtom.reportRead();
-    return super.corPokemon;
+  Color get currentPokemonColor {
+    _$currentPokemonColorAtom.reportRead();
+    return super.currentPokemonColor;
   }
 
   @override
-  set corPokemon(Color value) {
-    _$corPokemonAtom.reportWrite(value, super.corPokemon, () {
-      super.corPokemon = value;
+  set currentPokemonColor(Color value) {
+    _$currentPokemonColorAtom.reportWrite(value, super.currentPokemonColor, () {
+      super.currentPokemonColor = value;
     });
   }
 
-  final _$posicaoAtualAtom = Atom(name: '_PokeApiStoreBase.posicaoAtual');
+  final _$currentPokemonIndexAtom =
+      Atom(name: '_PokeApiStoreBase.currentPokemonIndex');
 
   @override
-  int get posicaoAtual {
-    _$posicaoAtualAtom.reportRead();
-    return super.posicaoAtual;
+  int get currentPokemonIndex {
+    _$currentPokemonIndexAtom.reportRead();
+    return super.currentPokemonIndex;
   }
 
   @override
-  set posicaoAtual(int value) {
-    _$posicaoAtualAtom.reportWrite(value, super.posicaoAtual, () {
-      super.posicaoAtual = value;
+  set currentPokemonIndex(int value) {
+    _$currentPokemonIndexAtom.reportWrite(value, super.currentPokemonIndex, () {
+      super.currentPokemonIndex = value;
     });
   }
 
@@ -110,11 +112,11 @@ mixin _$PokeApiStore on _PokeApiStoreBase, Store {
   }
 
   @override
-  Widget getImage({String numero}) {
+  Widget getImage({String num}) {
     final _$actionInfo = _$_PokeApiStoreBaseActionController.startAction(
         name: '_PokeApiStoreBase.getImage');
     try {
-      return super.getImage(numero: numero);
+      return super.getImage(num: num);
     } finally {
       _$_PokeApiStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -123,10 +125,10 @@ mixin _$PokeApiStore on _PokeApiStoreBase, Store {
   @override
   String toString() {
     return '''
-corPokemon: ${corPokemon},
-posicaoAtual: ${posicaoAtual},
+currentPokemonColor: ${currentPokemonColor},
+currentPokemonIndex: ${currentPokemonIndex},
 pokeAPI: ${pokeAPI},
-pokemonAtual: ${pokemonAtual}
+currentPokemon: ${currentPokemon}
     ''';
   }
 }

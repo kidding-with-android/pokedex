@@ -17,19 +17,19 @@ abstract class _PokeApiStoreBase with Store {
   PokeAPI _pokeAPI;
 
   @observable
-  Pokemon _pokemonAtual;
+  Pokemon _currentPokemon;
 
   @observable
-  Color corPokemon;
+  Color currentPokemonColor;
 
   @observable
-  int posicaoAtual;
+  int currentPokemonIndex;
 
   @computed
   PokeAPI get pokeAPI => _pokeAPI;
 
   @computed
-  Pokemon get pokemonAtual => _pokemonAtual;
+  Pokemon get currentPokemon => _currentPokemon;
 
   @action
   fetchPokemonList() {
@@ -42,19 +42,19 @@ abstract class _PokeApiStoreBase with Store {
 
   @action
   setPokemonAtual({int index}) {
-    _pokemonAtual = _pokeAPI.pokemon[index];
-    corPokemon = ConstsApp.getColorType(type: _pokemonAtual.type[0]);
-    posicaoAtual = index;
+    _currentPokemon = _pokeAPI.pokemon[index];
+    currentPokemonColor = ConstsApp.getColorType(type: _currentPokemon.type[0]);
+    currentPokemonIndex = index;
   }
 
   @action
-  Widget getImage({String numero}) {
+  Widget getImage({String num}) {
     return CachedNetworkImage(
       placeholder: (context, url) => new Container(
         color: Colors.transparent,
       ),
       imageUrl:
-          'https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/$numero.png',
+          'https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/$num.png',
     );
   }
 
