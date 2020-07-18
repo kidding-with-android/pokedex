@@ -12,18 +12,18 @@ import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 
-class PokeDetailPage extends StatefulWidget {
+class DetailPage extends StatefulWidget {
   final int index;
 
-  PokeDetailPage({Key key, this.index}) : super(key: key);
+  DetailPage({Key key, this.index}) : super(key: key);
 
   @override
-  _PokeDetailPageState createState() => _PokeDetailPageState();
+  _DetailPageState createState() => _DetailPageState();
 }
 
 enum AniProps { size, color, rotation }
 
-class _PokeDetailPageState extends State<PokeDetailPage> {
+class _DetailPageState extends State<DetailPage> {
   PageController _pageController;
   PokeApiStore _pokeApiStore;
   PokeApiV2Store _pokeApiV2Store;
@@ -84,6 +84,18 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
                   children: [
                     AppBar(
                       centerTitle: true,
+                      title: Opacity(
+                        opacity: _opacityTitleAppBar,
+                        child: Text(
+                          _pokeApiStore.currentPokemon.name,
+                          style: TextStyle(
+                            fontFamily: 'Google',
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                       elevation: 0,
                       backgroundColor: Colors.transparent,
                       leading: IconButton(
@@ -91,48 +103,20 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
                         onPressed: () => Navigator.pop(context),
                       ),
                       actions: [
-                        Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            LoopAnimation<MultiTweenValues<AniProps>>(
-                              builder: (context, child, value) {
-                                return Transform.rotate(
-                                  angle: value.get(AniProps.rotation) * math.pi,
-                                  child: Opacity(
-                                    child: Image.asset(
-                                      ConstsApp.whitePokeball,
-                                      height: 50,
-                                      width: 50,
-                                    ),
-                                    opacity: _opacityTitleAppBar * 0.2,
-                                  ),
-                                );
-                              },
-                              tween: _animation,
-                              duration: _animation.duration,
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.favorite_border),
-                              onPressed: () {},
-                            ),
-                          ],
+                        IconButton(
+                          icon: Icon(Icons.favorite_border),
+                          onPressed: () {},
                         ),
                       ],
                     ),
                     Positioned(
-                      top: (MediaQuery.of(context).size.height * 0.12) -
-                          _progress *
-                              (MediaQuery.of(context).size.height * 0.060),
-                      left: 20 +
-                          _progress *
-                              (MediaQuery.of(context).size.height * 0.060),
+                      top: MediaQuery.of(context).size.height * 0.12,
+                      left: 20,
                       child: Text(
                         _pokeApiStore.currentPokemon.name,
                         style: TextStyle(
                           fontFamily: 'Google',
-                          fontSize: 38 -
-                              _progress *
-                                  (MediaQuery.of(context).size.height * 0.011),
+                          fontSize: 38,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -174,16 +158,16 @@ class _PokeDetailPageState extends State<PokeDetailPage> {
             listener: (state) {
               setState(() {
                 _progress = state.progress;
-                _multiple = 1 - interval(0.60, 0.87, _progress);
+                _multiple = 1 - interval(0.60, 0.90, _progress);
                 _opacity = _multiple;
-                _opacityTitleAppBar = interval(0.60, 0.87, _progress);
+                _opacityTitleAppBar = interval(0.60, 0.90, _progress);
               });
             },
             elevation: 0,
             cornerRadius: 30,
             snapSpec: const SnapSpec(
                 snap: true,
-                snappings: [0.60, 0.87],
+                snappings: [0.60, 0.90],
                 positioning: SnapPositioning.relativeToAvailableSpace),
             builder: (context, state) {
               return Container(

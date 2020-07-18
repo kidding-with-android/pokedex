@@ -6,7 +6,7 @@ import 'package:pokedex/consts/consts_app.dart';
 import 'package:pokedex/models/pokeapi.dart';
 import 'package:pokedex/pages/home_page/widgets/app_bar_home.dart';
 import 'package:pokedex/pages/home_page/widgets/poke_item.dart';
-import 'package:pokedex/pages/poke_detail_page/poke_detail_page.dart';
+import 'package:pokedex/pages/detail_page/detail_page.dart';
 import 'package:pokedex/stores/pokeapi_store.dart';
 
 class HomePage extends StatefulWidget {
@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
                                                 MaterialPageRoute(
                                                   builder:
                                                       (BuildContext context) =>
-                                                          PokeDetailPage(
+                                                          DetailPage(
                                                     index: index,
                                                   ),
                                                   fullscreenDialog: true,
